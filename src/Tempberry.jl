@@ -5,6 +5,8 @@ using HttpServer
 export
   lstherm,
   readtherm,
+  #gentemppage,
+  hosttempswebpage,
   hostwebpage
 
 
@@ -35,26 +37,56 @@ function readtherm(thermname; path="/sys/bus/w1/devices")
   l2 = readline(fid)
   close(fid)
   l2s = split(l2,'=')
-  parse(Float64, l2s)/1000.0
+  parse(Float64, l2s[2])/1000.0
 end
 
+#function gentempspage()
+#  htmlstr = ""
+#  
+#  return htmlstr
+#end
 
-function hostwebpage(;port=8000)
-  g = (req, res) -> begin
+
+function defaultpage(req, res)
     if ismatch(r"^/hello/",req.resource)
         string("Hello ", split(req.resource,'/')[3], "!")
     else
         404
     end
   end
+
+
+function hostwebpage(;port=8000)
   http = HttpHandler() do req::Request, res::Response
 
-      Response(  g(req, res)  )
+      Response(  defaultpage(req, res)  )
 
   end
   server = Server( http )
   run(server, port=port)
   nothing
 end
+
+function gentemppage(req, res, temp1, temp2)
+    if ismatch(r"^/hello/", req.resource)
+        string("temp1=$(temp1), temp2=$(temp2), and ", split(req.resource,'/')[3], "!")
+    else
+        return 404
+    end
+end
+
+function hosttempswebpage(;port=8000)
+  @show therms = lstherm()
+  
+  http = HttpHandler() do req::Request, res::Response 
+      temp1 = readtherm(therms[1])
+      temp2 = readtherm(therms[2])
+      Response(  gentemppage(req, res, temp1, temp2)  )
+  end
+  server = Server( http )
+  run(server, port=port)
+  nothing
+end
+
 
 end
