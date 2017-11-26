@@ -23,13 +23,37 @@ The keyboard, mouse, and monitor are only required for setup or debugging the Pi
 
 ## Warnings
 
-- The large (optional) **heatsink** on the Pi's CPU is **too big** when trying to attach the skrew terminal block on top of the board. You can skip installation of the big heatsink when working in cooler environments with lower CPU load, or cut the bigger heatsink smaller before installing it. Alternatively, please file an issue with this repo if you find a smaller heatsink for purchase which can be reported here.
-- **Change the username, password, and computer name** of the Raspberry Pi (after following the provided install procedures in preinstalled on the MicroSD card). If the Pi is exposed to the Internet, the standard computer name, username and no password (as default) is vulnerable to hackers. Hacker-bots **will** install malware or spamware on Pi, or use it as a weakpoint (trojan) behind your local firewall to access your network. Simply changing the username, password, and computer name make the Pi as resilient as any other computer on your network. Remember, the smart hackers won't let you discover they are doing something dodgy, so change the values now.
+- The large (optional) **heatsink** on the Pi's CPU is **too big** when trying to attach the skrew terminal block on top of the board. You can skip installation of the big heatsink when working in cooler environments with lower CPU load, or cut the bigger heatsink smaller before installing it. Alternatively, please file an issue with this repo if you find a smaller heatsink for purchase which can be reported here. Yes, you can add the shortend heatsink later.
+- **Change the username, password, and computer name** of the Raspberry Pi (after following the preinstalled---on the MicroSD card---Pi setup procedures). If the Pi is exposed to the Internet, the standard computer name, username and no password (same default for everybody) is vulnerable to hackers. Hacker-bots **will** come and install malware or spamware on the Pi, or use it as a weakpoint (trojan) behind your local firewall, which in turn can access your network. Simply changing the username, password, and computer name will make the Pi as resilient as any other computer on your network. Remember, the smart hackers won't let you discover they are doing something dodgy, so change the values now.
 
 # Installation
 
-To install Julia on this Raspberry Pi, open a terminal and tipe:
+Install Raspbian operating system by following the install prompts that come standard with MicroSD in the Raspberry Pi box. Remember to setup the WiFi or Ethernet cable connection before letting the install run. This will ensure you get the latest versions of Aptitude packages (`apt-get`) as part of the standard install.
+
+**Change the username, password, and computer name**.
+
+## After Raspbian is installed
+
+After setting up the Pi and changing the password, install Julia by opening a terminal and typing:
 ```bash
 sudo apt-get update
 sudo apt-get install julia
+julia
 ```
+
+After julia is installed, you should be able to run a REPL with the command `julia`. Once in the Julia REPL, installation of this `Tempberry` package is done by:
+```julia
+julia> Pkg.clone("https://github.com/dehann/Tempberry.jl.git")
+```
+
+## Configuring the Pi
+
+The `1-wire` interface (as well as `ssh`) must be activated, which can be done by clicking on the raspberry button on the top left of the screen  ->  `Preferences`  ->  `Raspberry Pi Configuration`, and navigating to the 'Interfaces' tab. Enable the `SSH` and `1-wire` options and click `OK`.
+
+## Physical Thermometer Hardware Setup
+
+Follow the [Adafruit blog](http://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing/parts) to connect one, two, ..., up to five `DS18B20` thermometers to the [skrew terminal breakout board](http://www.amazon.com/dp/B01M27459S/ref=sxbs_sxwds-stvp_1?pf_rd_m=ATVPDKIKX0DER&pf_rd_p=3341940462&pd_rd_wg=o9P8Y&pf_rd_r=FZ2DCVEDSQ6NJ0X32N33&pf_rd_s=desktop-sx-bottom-slot&pf_rd_t=301&pd_rd_i=B01M27459S&pd_rd_w=NOabk&pf_rd_i=raspberry+pi+3+gpio+connector&pd_rd_r=bc208bc5-0b16-42f5-b047-39db7fbad512&ie=UTF8&qid=1511712653&sr=1). Some soldering will be required. The connections are made to the `3.3V`, `GND`, and `IO4` pins of the GPIO connector.
+
+# Usage
+
+Work in progress
