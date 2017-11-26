@@ -42,7 +42,7 @@ end
 
 #function gentempspage()
 #  htmlstr = ""
-#  
+#
 #  return htmlstr
 #end
 
@@ -69,7 +69,7 @@ end
 
 function gentemppage(req, res, temp1, temp2)
     if ismatch(r"^/hello/", req.resource)
-        string("temp1=$(temp1), temp2=$(temp2), and ", split(req.resource,'/')[3], "!")
+        return "temp1=$(temp1), temp2=$(temp2)!"
     else
         return 404
     end
@@ -77,8 +77,8 @@ end
 
 function hosttempswebpage(;port=8000)
   @show therms = lstherm()
-  
-  http = HttpHandler() do req::Request, res::Response 
+
+  http = HttpHandler() do req::Request, res::Response
       temp1 = readtherm(therms[1])
       temp2 = readtherm(therms[2])
       Response(  gentemppage(req, res, temp1, temp2)  )
