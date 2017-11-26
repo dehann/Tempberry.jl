@@ -3,7 +3,8 @@ module Tempberry
 using HttpServer
 
 export
-  lstherm
+  lstherm,
+  hostwebpage
 
 
 """
