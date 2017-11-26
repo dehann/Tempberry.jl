@@ -13,11 +13,13 @@ List thermometers currently connected and discoverable through `/sys/bus/w1/devi
 """
 function lstherm()
   here=pwd()
-  cd("/sys/bus/w1/devices/")
+  path = "/sys/bus/w1/devices/"
+  cd(path)
+  println("Reading $(path) for 28-* therm devices")
   dirfiles = readdir()
   keeplist = String[]
   for fin in dirfiles
-    if fin[1:3] = "28-"
+    if fin[1:3] == "28-"
       push!(keeplist, fin)
     end
   end
