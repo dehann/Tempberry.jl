@@ -4,6 +4,7 @@ using HttpServer
 
 export
   lstherm,
+  readtherm,
   hostwebpage
 
 
@@ -26,6 +27,15 @@ function lstherm()
   end
   cd(here)
   keeplist
+end
+
+function readtherm(thermname; path="/sys/bus/w1/devices")
+  fid = open(joinpath(path,thermname,"w1_slave"),"r")
+  l1 = readline(fid)
+  l2 = readline(fid)
+  close(fid)
+  l2s = split(l2,'=')
+  parse(Float64, l2s)/1000.0
 end
 
 
