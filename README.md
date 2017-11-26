@@ -43,6 +43,7 @@ julia
 
 After julia is installed, you should be able to run a REPL with the command `julia`. Once in the Julia REPL, installation of this `Tempberry` package is done by:
 ```julia
+julia> Pkg.clone("https://github.com/aviks/SMTPClient.jl.git")
 julia> Pkg.clone("https://github.com/dehann/Tempberry.jl.git")
 ```
 
