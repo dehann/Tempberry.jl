@@ -28,5 +28,22 @@ function lstherm()
 end
 
 
+function hostwebpage(;port=8000)
+  g = (req, res) -> begin
+    if ismatch(r"^/hello/",req.resource)
+        string("Hello ", split(req.resource,'/')[3], "!")
+    else
+        404
+    end
+  end
+  http = HttpHandler() do req::Request, res::Response
+
+      Response(  g(req, res)  )
+
+  end
+  server = Server( http )
+  run(server, host=IPv4(127,0,0,1), port=port)
+  nothing
+end
 
 end
