@@ -43,7 +43,7 @@ function hostwebpage(;port=8000)
 
   end
   server = Server( http )
-  run(server, host=IPv4(127,0,0,1), port=port)
+  run(server, port=port)
   nothing
 end
 
