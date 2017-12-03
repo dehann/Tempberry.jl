@@ -1,14 +1,15 @@
 module Tempberry
 
 using
-  HttpServer,
-  DataStructures
+  HttpServer
 
 export
   lstherm,
   readtherm,
   hosttempberrylive,
-  hosttestpage
+  hosttestpage,
+  loop!,
+  maketemptable
 
 
 ## Temperatures page ===========================================================

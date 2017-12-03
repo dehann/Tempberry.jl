@@ -2,6 +2,7 @@
 
 
 function defaultpage(req, res, stl)
+  @show "This far"
   if ismatch(r"^/",req.resource)
     # string("Hello ", split(req.resource,'/')[3], "!")
     maketemptable(stl[:timestamp], stl[:temp1], stl[:temp2])
@@ -13,7 +14,7 @@ end
 
 
 
-function loop(stl::Dict{Symbol,Any})
+function loop!(stl::Dict{Symbol,Any})
   stl[:timestamp] = now()
   i = 0
   for therm in stl[:therms]
