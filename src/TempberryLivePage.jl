@@ -2,7 +2,6 @@
 
 
 function defaultpage(req, res, stl)
-  @show "This far"
   if ismatch(r"^/",req.resource)
     # string("Hello ", split(req.resource,'/')[3], "!")
     maketemptable(stl[:timestamp], stl[:temp1], stl[:temp2])
@@ -25,7 +24,7 @@ function loop!(stl::Dict{Symbol,Any})
   nothing
 end
 
-function hosttempberrylive(;port=9000,delay=5)
+function hosttempberrylive(;port=8000,delay=5)
   @show therms = lstherm()
   sharedtemps = Dict{Symbol, Any}()
   sharedtemps[:therms] = therms

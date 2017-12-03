@@ -7,9 +7,9 @@ function devloop!(stl::Dict{Symbol, Any})
   nothing
 end
 
-function hosttestpage(;port=9000, delay=5)
-  sharedtemps = Dict{Symbol, Any}()
-  sharedtemps[:numtherms] = 2
+function hosttestpage(;port=8000,delay=5)
+  @show sharedtemps = Dict{Symbol, Any}()
+  @show sharedtemps[:numtherms] = 2
   @async begin
     tic()
     while true
@@ -18,10 +18,13 @@ function hosttestpage(;port=9000, delay=5)
       tic()
     end
   end
+  @show "setting up handler"
   http = HttpHandler() do req::Request, res::Response
       Response(  defaultpage(req, res, sharedtemps)  )
+      #Response(  "This is a test"  )
   end
   server = Server( http )
+  @show "going to run handler"
   run(server, port=port)
   nothing
 end
