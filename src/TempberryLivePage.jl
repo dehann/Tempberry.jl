@@ -21,6 +21,7 @@ function loop!(stl::Dict{Symbol,Any})
     stl[Symbol("temp$(i)")] = readtherm(therm) # TODO -- make this less hacky, drop temp1 & 2 for actual addresses
   end
   # stl[:minmax24]
+  logging(stl)
   nothing
 end
 
