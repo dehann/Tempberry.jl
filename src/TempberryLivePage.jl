@@ -1,15 +1,26 @@
 
 
-function defaultpage(req, res, stl)
+function defaultpage(req, res, stl)::Response
   if ismatch(r"^/",req.resource)
     # string("Hello ", split(req.resource,'/')[3], "!")
     maketemptable(stl[:timestamp], stl[:temp1], stl[:temp2], files = stl[:logfiles])
+  elseif ismatch(r"^/download?file=*", req.resource)
+    file = req.resource #strip this to just the file.
+    return buildDownloadResponse(file)
   else
     @show "unknown request $(req.resource)"
     404
   end
 end
 
+function buildDownloadResponse(file::String)
+  exampleDownload = "Hey this is my cool string with all the binary data."
+  headers = Headers(
+    "Server"            => "Julia/$VERSION",
+    "Content-Type"      => "application/octet-stream",
+    "Date"              => Dates.format(now(Dates.UTC), Dates.RFC1123Format) )
+  return Response(200, headers, exampleDownload)
+end
 
 function loop!(stl::Dict{Symbol,Any})
   stl[:timestamp] = now()
@@ -41,7 +52,8 @@ function hosttempberrylive(;port=8000,delay=5)
   end
 
   http = HttpHandler() do req::Request, res::Response
-      Response(  defaultpage(req, res, sharedtemps)  )
+      buildDownloadResponse("testFile")
+      #Response(  defaultpage(req, res, sharedtemps)  )
   end
   server = Server( http )
   run(server, port=port)
