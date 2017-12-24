@@ -4,6 +4,7 @@ function devloop!(stl::Dict{Symbol, Any})
   for i in 1:stl[:numtherms]
     stl[Symbol("temp$(i)")] = round(20+randn(),3)
   end
+  logging(stl)
   nothing
 end
 
