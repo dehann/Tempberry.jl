@@ -1,25 +1,24 @@
 
 
-function defaultpage(req, res, stl)::Response
-  if ismatch(r"^/",req.resource)
-    # string("Hello ", split(req.resource,'/')[3], "!")
-    maketemptable(stl[:timestamp], stl[:temp1], stl[:temp2], files = stl[:logfiles])
-  elseif ismatch(r"^/download?file=*", req.resource)
-    file = req.resource #strip this to just the file.
-    return buildDownloadResponse(file)
-  else
-    @show "unknown request $(req.resource)"
-    404
-  end
-end
+#function defaultpage(req, res, stl)::Response
+#  if ismatch(r"^/",req.resource)
+#	Response(  maketemptable(stl[:timestamp], stl[:temp1], stl[:temp2], files = stl[:logfiles]) )
+#  else
+#	@show "unknown request $(req.resource)"
+#	404
+#  end
+#end
 
-function buildDownloadResponse(file::String)
-  exampleDownload = "Hey this is my cool string with all the binary data."
-  headers = Headers(
+function builddownloadresponse(stl, file::T) where {T <: AbstractString}
+  fid = open(joinpath(stl[:logdir], file),"r")
+  downloaddata = readstring(fid)
+  close(fid)
+  #downloaddata = "Hey this is my cool string with all the binary data."
+  headers = Dict{AbstractString, AbstractString}(
     "Server"            => "Julia/$VERSION",
     "Content-Type"      => "application/octet-stream",
     "Date"              => Dates.format(now(Dates.UTC), Dates.RFC1123Format) )
-  return Response(200, headers, exampleDownload)
+  return Response(200, headers, downloaddata)
 end
 
 function loop!(stl::Dict{Symbol,Any})
@@ -40,6 +39,7 @@ function hosttempberrylive(;port=8000,delay=5)
   sharedtemps = Dict{Symbol, Any}()
   sharedtemps[:therms] = therms
   sharedtemps[:numtherms] = length(therms)
+  sharedtemps[:logdir]="$(ENV["HOME"])/temperaturelogs/"
   sharedtemps[:logfiles] = Vector{String}()
   @async begin
     tic()
@@ -52,8 +52,17 @@ function hosttempberrylive(;port=8000,delay=5)
   end
 
   http = HttpHandler() do req::Request, res::Response
-      buildDownloadResponse("testFile")
       #Response(  defaultpage(req, res, sharedtemps)  )
+      if ismatch(r"^/dashboard",req.resource)
+		Response(  maketemptable(sharedtemps[:timestamp], sharedtemps[:temp1], sharedtemps[:temp2], files = sharedtemps[:logfiles]) )
+	  elseif ismatch(r"^/download", req.resource)
+	    params = split(split(req.resource,'?')[end], '=')
+		file = params[2]
+		return builddownloadresponse(sharedtemps, file)
+	  else
+		@show "unknown request $(req.resource)"
+		404
+	  end
   end
   server = Server( http )
   run(server, port=port)

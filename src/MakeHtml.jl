@@ -48,12 +48,11 @@ function maketemptable(timestamp, temp1, temp2; files=String["";])
   for fl in files
       i += 1
       if fl != ""
-          @show fl
           lenmm = size(minmaxs,1) >= i
 	      flss = split(fl, '/')
 		  newline = """
 		  <tr>
-			<td><a href=\"/download/file">download file</a></td>
+			<td><a href=\"/download?file=$(flss[end])">$(flss[end])</a></td>
 			<td>$(lenmm ? minmaxs[i,1] : "N/A") / $(lenmm ? minmaxs[i,2] : "N/A")</td>
 		  </tr>
 		  """

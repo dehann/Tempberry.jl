@@ -6,7 +6,6 @@ function removeoldlogs(stl, dir, days)
   # https://docs.julialang.org/en/stable/stdlib/file/
   for (root, dirs, files) in walkdir(dir)
     for file in files
-      push!( stl[:logfiles], joinpath(dir, file) )
       sfn = split(split(file, '.')[1],'-')
       filedate = parse.(Int, sfn) # convert filename to integers for date
       ndays = today - Date(filedate...) # splat
@@ -14,16 +13,20 @@ function removeoldlogs(stl, dir, days)
         # remove the file
         Base.Filesystem.rm(joinpath(dir, file))
       end
+      
+      # list files for download on dashboard
+      push!( stl[:logfiles], joinpath(dir, file) )
+      
     end
   end
   nothing
 end
 
-function logging(stl::Dict; dir="$(ENV["HOME"])/temperaturelogs/", days=30 )
+function logging(stl::Dict; days=30 )
   # check if the logging directory exists
-  isdir(dir) ? nothing : mkdir(dir)  # compact if statement
+  isdir(stl[:logdir]) ? nothing : mkdir(stl[:logdir])  # compact if statement
   # check if there are old logs which should be removeoldlogs
-  removeoldlogs(stl, dir, days)
+  removeoldlogs(stl, stl[:logdir], days)
   # get current timestamp
   nw = now()
   # for formatting see https://stackoverflow.com/questions/37253537/print-current-time-in-julia
@@ -37,7 +40,7 @@ function logging(stl::Dict; dir="$(ENV["HOME"])/temperaturelogs/", days=30 )
   # open the file and append new data
   filename = Dates.format(nw, "yyyy-mm-dd")
   filename *= ".csv"
-  fid = open(joinpath(dir,filename), "a") # append mode
+  fid = open(joinpath(stl[:logdir],filename), "a") # append mode
   println(fid, str)
   close(fid)
 
