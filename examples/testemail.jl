@@ -1,6 +1,7 @@
 # test email functionality
 
 using SMTPClient
+
 SMTPClient.init()
 o=SendOptions(blocking=true, isSSL=true, username="you@gmail.com", passwd="yourgmailpassword")
 #Provide the message body as RFC5322 within an IO

@@ -1,7 +1,8 @@
 module Tempberry
 
 using
-  HttpServer
+  HttpServer,
+  SMTPClient
 
 export
   lstherm,
@@ -11,6 +12,9 @@ export
   loop!,
   maketemptable
 
+## Send Emails =================================================================
+
+include("EmailFuctions.jl")
 
 ## Temperatures page ===========================================================
 

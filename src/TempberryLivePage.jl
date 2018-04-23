@@ -33,7 +33,11 @@ function loop!(stl::Dict{Symbol,Any})
   nothing
 end
 
+"""
+    hosttempberrylive(;port=,delay=)
 
+Launching function for hosting Temberry web service on a port and update delay.
+"""
 function hosttempberrylive(;port=8000,delay=5)
   @show therms = lstherm()
   sharedtemps = Dict{Symbol, Any}()
