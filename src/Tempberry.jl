@@ -15,7 +15,7 @@ export
 
 ## Send Emails =================================================================
 
-include("EmailFuctions.jl")
+include("EmailFunctions.jl")
 
 ## Temperatures page ===========================================================
 
