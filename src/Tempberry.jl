@@ -10,7 +10,8 @@ export
   hosttempberrylive,
   hosttestpage,
   loop!,
-  maketemptable
+  maketemptable,
+  sendTempberryReportingEmails
 
 ## Send Emails =================================================================
 

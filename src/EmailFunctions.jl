@@ -16,7 +16,7 @@ function getGmailSMTPClientUrl()
   return "smtp://smtp.gmail.com:587"
 end
 
-function generateEmailMsg(addr)
+function generateEmailMsg(addr, message)
   datetimestr = "Date: Fri, 18 Oct 2013 21:44:29 +0100"
   msg = """
   $(datetimestr)
@@ -29,39 +29,29 @@ function generateEmailMsg(addr)
   return body
 end
 
-
 """
     sendTempberryReportingEmails(;message=)
 
 Function to send a test email to all email addresses listed in the environment variable.
 """
-function sendTempberryReportingEmails(;
-              message="This is a test from Tempberry."  )
+function sendTempberryReportingEmails(;message="This is a test from Tempberry.")
   #
   # SMTPClient.init()
   opts=SendOptions(blocking=true, isSSL=true, username=getTempberryEmailAddr(),  passwd=getTempberryEmailPswd() )
 
   # loop over all reporting emails
   for addr in getTempberryReportingAddrs()
-    body = generateEmailMsg(addr)
+    body = generateEmailMsg(addr, message)
     #Provide the message body as RFC5322 within an IO
     resp=send(getGmailSMTPClientUrl(), ["<$(getTempberryEmailAddr())>"], "<$(addr)>",  body, opts)
   end
 
-  SMTPClient.cleanup()
+  # SMTPClient.cleanup()
 
   nothing
 end
 
 
 
-
-
 # random testing
-
-using SMTPClient
-
-# addr = getTempberryReportingAddrs()[1]
-# generateEmailMsg(addr)
-
-sendTempberryReportingEmails()
+# sendTempberryReportingEmails()
