@@ -45,10 +45,12 @@ function hosttempberrylive(;port=8000,delay=5)
   sharedtemps[:numtherms] = length(therms)
   sharedtemps[:logdir]="$(ENV["HOME"])/temperaturelogs/"
   sharedtemps[:logfiles] = Vector{String}()
+  emailwarningsettings!(sharedtemps)
   @async begin
     tic()
     while true
       loop!(sharedtemps)
+      checkrangesandemail(sharedtemps)
       sltime = delay-toq()-0.004 # trail and error compensation value for approx 1/5Hz
       sltime > 0 ? sleep(sltime) : nothing # correct for computation delay
       tic()

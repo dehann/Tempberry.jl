@@ -1,15 +1,27 @@
 # this file contains all functions related to Tempberry email management
 
 function getTempberryEmailAddr()
-  return ENV["TEMPBERRY_EMAIL_ADDRESS"]
+  try
+    return ENV["TEMPBERRY_EMAIL_ADDRESS"]
+  catch e
+    warn("Cannot find bash environment variable: TEMPBERRY_EMAIL_ADDRESS")
+  end
 end
 
 function getTempberryEmailPswd()
-  return ENV["TEMPBERRY_EMAIL_PASSWORD"]
+  try
+    return ENV["TEMPBERRY_EMAIL_PASSWORD"]
+  catch e
+    warn("Cannot find bash environment variable: TEMPBERRY_EMAIL_PASSWORD")
+  end
 end
 
 function getTempberryReportingAddrs()
-  return strip.(split(ENV["TEMPBERRY_REPORTING_ADDRESS"], ';'))
+  try
+    return strip.(split(ENV["TEMPBERRY_REPORTING_ADDRESS"], ';'))
+  catch e
+    warn("Cannot find bash environment variable: TEMPBERRY_REPORTING_ADDRESS")
+  end
 end
 
 function getGmailSMTPClientUrl()
@@ -63,6 +75,9 @@ function checkhours(stl::Dict{Symbol, Any}, testhour::Int)
   abs(testhour - stl[:hourssinceemails]) > stl[:emaildelayhours]
 end
 
+"""
+Check if temperatures are within the minimum and maximum prescribed values, and send emails if not.
+"""
 function checkrangesandemail(stl::Dict{Symbol,Any})
 
   currhours = Dates.hour(now())
@@ -84,7 +99,7 @@ end
 function emailwarningsettings!(sharedtempsl::Dict{Symbol, Any})
   sharedtempsl[:hourssinceemails] = 999999
   sharedtempsl[:minimumwarning] = 10
-  sharedtempsl[:maximumwarning] = 21
+  sharedtempsl[:maximumwarning] = 23
   sharedtempsl[:emaildelayhours] = 6
   nothing
 end

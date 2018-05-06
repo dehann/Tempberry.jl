@@ -19,6 +19,7 @@ function hosttestpage(;port=8000,delay=5)
     tic()
     while true
       devloop!(sharedtemps)
+      checkrangesandemail(sharedtemps)
       sleep(delay-toq()) # correct for computation delay
       tic()
     end
