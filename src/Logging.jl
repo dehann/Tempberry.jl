@@ -13,10 +13,10 @@ function removeoldlogs(stl, dir, days)
         # remove the file
         Base.Filesystem.rm(joinpath(dir, file))
       end
-      
+
       # list files for download on dashboard
       push!( stl[:logfiles], joinpath(dir, file) )
-      
+
     end
   end
   nothing
@@ -31,7 +31,7 @@ function logging(stl::Dict; days=30 )
   nw = now()
   # for formatting see https://stackoverflow.com/questions/37253537/print-current-time-in-julia
   # build new data string
-  str = Dates.format(nw, "HH:MM:SS")
+  str = Dates.format(nw, "yyyy-mm-dd, HH:MM:SS")
   for i in 1:stl[:numtherms]
     thermsym = Symbol("temp$(i)")
     str *= ", $(stl[thermsym])"

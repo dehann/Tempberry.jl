@@ -37,21 +37,70 @@ Function to send a test email to all email addresses listed in the environment v
 function sendTempberryReportingEmails(;message="This is a test from Tempberry.")
   #
   # SMTPClient.init()
-  opts=SendOptions(blocking=true, isSSL=true, username=getTempberryEmailAddr(),  passwd=getTempberryEmailPswd() )
+  try
+    opts=SendOptions(blocking=true, isSSL=true, username=getTempberryEmailAddr(),    passwd=getTempberryEmailPswd() )
 
-  # loop over all reporting emails
-  for addr in getTempberryReportingAddrs()
+    # loop over all reporting emails
+    for addr in getTempberryReportingAddrs()
     body = generateEmailMsg(addr, message)
     #Provide the message body as RFC5322 within an IO
     resp=send(getGmailSMTPClientUrl(), ["<$(getTempberryEmailAddr())>"], "<$(addr)>",  body, opts)
-  end
+    end
 
-  # SMTPClient.cleanup()
+    # SMTPClient.cleanup()
+  catch e
+    warn("Failed sending email: $message")
+    @show e
+    @show stacktrace()
+  end
 
   nothing
 end
 
 
+
+function checkhours(stl::Dict{Symbol, Any}, testhour::Int)
+  abs(testhour - stl[:hourssinceemails]) > stl[:emaildelayhours]
+end
+
+function checkrangesandemail(stl::Dict{Symbol,Any})
+
+  currhours = Dates.hour(now())
+  outofrange = checktemperatureranges(stl)
+  outofhours = checkhours(stl, currhours)
+
+  if outofrange && outofhours
+    message = "[$(now())] Tempberry, out of range, temps at: "
+    for i in 1:stl[:numtherms]
+      val = round(stl[Symbol("temp$(i)")],1)
+      message *= "$(val) C, "
+    end
+    sendTempberryReportingEmails(message=message)
+    stl[:hourssinceemails] = currhours
+  end
+  nothing
+end
+
+function emailwarningsettings!(sharedtempsl::Dict{Symbol, Any})
+  sharedtempsl[:hourssinceemails] = 999999
+  sharedtempsl[:minimumwarning] = 10
+  sharedtempsl[:maximumwarning] = 21
+  sharedtempsl[:emaildelayhours] = 6
+  nothing
+end
+
+
+function checktemperatureranges(stl::Dict{Symbol,Any})
+  minval = stl[:minimumwarning]
+  maxval = stl[:maximumwarning]
+  for i in 1:stl[:numtherms]
+    val = stl[Symbol("temp$(i)")]
+    if minval < val < maxval
+      return true
+    end
+  end
+  return false
+end
 
 # random testing
 # sendTempberryReportingEmails()
