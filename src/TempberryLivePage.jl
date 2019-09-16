@@ -1,24 +1,16 @@
 
 
-#function defaultpage(req, res, stl)::Response
-#  if ismatch(r"^/",req.resource)
-#	Response(  maketemptable(stl[:timestamp], stl[:temp1], stl[:temp2], files = stl[:logfiles]) )
-#  else
-#	@show "unknown request $(req.resource)"
-#	404
-#  end
-#end
-
 function builddownloadresponse(stl, file::T) where {T <: AbstractString}
-  fid = open(joinpath(stl[:logdir], file),"r")
-  downloaddata = readstring(fid)
-  close(fid)
-  #downloaddata = "Hey this is my cool string with all the binary data."
-  headers = Dict{AbstractString, AbstractString}(
-    "Server"            => "Julia/$VERSION",
-    "Content-Type"      => "application/octet-stream",
-    "Date"              => Dates.format(now(Dates.UTC), Dates.RFC1123Format) )
-  return Response(200, headers, downloaddata)
+  @warn "download reponse not currently available"
+  # fid = open(joinpath(stl[:logdir], file),"r")
+  # downloaddata = readstring(fid)
+  # close(fid)
+  # #downloaddata = "Hey this is my cool string with all the binary data."
+  # headers = Dict{AbstractString, AbstractString}(
+  #   "Server"            => "Julia/$VERSION",
+  #   "Content-Type"      => "application/octet-stream",
+  #   "Date"              => Dates.format(now(Dates.UTC), Dates.RFC1123Format) )
+  # return Response(200, headers, downloaddata)
 end
 
 function loop!(stl::Dict{Symbol,Any})
