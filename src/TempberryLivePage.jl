@@ -29,6 +29,7 @@ end
 function hosttempberrylive(;port=8000,delay=5)
   @show therms = lstherm()
   sharedtemps = Dict{Symbol, Any}()
+  sharedtemps[:timestamp] = now()
   sharedtemps[:therms] = therms
   sharedtemps[:numtherms] = length(therms)
   sharedtemps[:logdir]="$(ENV["HOME"])/temperaturelogs/"
