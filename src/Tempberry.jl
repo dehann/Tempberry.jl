@@ -1,7 +1,7 @@
 module Tempberry
 
 using
-  Genie
+  Genie, Genie.Router, Genie.Renderer
 
 export
   lstherm,
