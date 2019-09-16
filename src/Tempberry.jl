@@ -1,7 +1,7 @@
 module Tempberry
 
 using
-  HttpServer
+  Genie
 
 export
   lstherm,

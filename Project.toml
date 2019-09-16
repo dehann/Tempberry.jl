@@ -1,0 +1,12 @@
+name = "Tempberry"
+uuid = "8b960330-d8af-11e9-37c1-531dec099eb9"
+version = "0.1.0"
+
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Genie = "c43c736e-a2d1-11e8-161f-af95117fbd1e"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[compat]
+Genie = "0.17"
+julia = "1"

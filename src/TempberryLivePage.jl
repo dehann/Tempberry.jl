@@ -51,21 +51,24 @@ function hosttempberrylive(;port=8000,delay=5)
     end
   end
 
-  http = HttpHandler() do req::Request, res::Response
-      #Response(  defaultpage(req, res, sharedtemps)  )
-      if ismatch(r"^/dashboard",req.resource)
-		Response(  maketemptable(sharedtemps[:timestamp], sharedtemps[:temp1], sharedtemps[:temp2], files = sharedtemps[:logfiles]) )
-	  elseif ismatch(r"^/download", req.resource)
-	    params = split(split(req.resource,'?')[end], '=')
-		file = params[2]
-		return builddownloadresponse(sharedtemps, file)
-	  else
-		@show "unknown request $(req.resource)"
-		404
-	  end
+  # http = HttpHandler() do req::Request, res::Response
+  #     #Response(  defaultpage(req, res, sharedtemps)  )
+  #     if ismatch(r"^/dashboard",req.resource)
+	# 	Response(  maketemptable(sharedtemps[:timestamp], sharedtemps[:temp1], sharedtemps[:temp2], files = sharedtemps[:logfiles]) )
+	#   elseif ismatch(r"^/download", req.resource)
+	#     params = split(split(req.resource,'?')[end], '=')
+	# 	file = params[2]
+	# 	return builddownloadresponse(sharedtemps, file)
+	#   else
+	# 	@show "unknown request $(req.resource)"
+	# 	404
+	#   end
+  # end
+  # server = Server( http )
+  # run(server, port=port)
+  route("/index.html") do
+    html(maketemptable(sharedtemps[:timestamp], sharedtemps[:temp1], sharedtemps[:temp2], files = sharedtemps[:logfiles]))
   end
-  server = Server( http )
-  run(server, port=port)
   nothing
 end
 
