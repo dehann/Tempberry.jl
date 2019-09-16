@@ -69,6 +69,8 @@ function hosttempberrylive(;port=8000,delay=5)
   route("/index.html") do
     html(maketemptable(sharedtemps[:timestamp], sharedtemps[:temp1], sharedtemps[:temp2], files = sharedtemps[:logfiles]))
   end
+
+  startup(port, async=false)
   nothing
 end
 
