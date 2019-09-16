@@ -26,7 +26,21 @@ function loop!(stl::Dict{Symbol,Any})
 end
 
 
-function hosttempberrylive(;port=8000,delay=5)
+function intervalTimer!(cond::Condition; interval::Float64=5.0)
+  while true
+    notify(cond)
+    sleep(interval)
+  end
+end
+
+function updateCycle!(sharedtemps::Dict)
+  while true
+    wait(sharedtemps[:condition])
+    loop!(sharedtemps)
+  end
+end
+
+function initSharedDict()
   @show therms = lstherm()
   sharedtemps = Dict{Symbol, Any}()
   sharedtemps[:timestamp] = now()
@@ -34,36 +48,44 @@ function hosttempberrylive(;port=8000,delay=5)
   sharedtemps[:numtherms] = length(therms)
   sharedtemps[:logdir]="$(ENV["HOME"])/temperaturelogs/"
   sharedtemps[:logfiles] = Vector{String}()
-  @async begin
-    tic()
-    while true
-      loop!(sharedtemps)
-      sltime = delay-toq()-0.004 # trail and error compensation value for approx 1/5Hz
-      sltime > 0 ? sleep(sltime) : nothing # correct for computation delay
-      tic()
-    end
-  end
+  sharedtemps[:condition] = Condition()
+  return sharedtemps
+end
 
-  # http = HttpHandler() do req::Request, res::Response
-  #     #Response(  defaultpage(req, res, sharedtemps)  )
-  #     if ismatch(r"^/dashboard",req.resource)
-	# 	Response(  maketemptable(sharedtemps[:timestamp], sharedtemps[:temp1], sharedtemps[:temp2], files = sharedtemps[:logfiles]) )
-	#   elseif ismatch(r"^/download", req.resource)
-	#     params = split(split(req.resource,'?')[end], '=')
-	# 	file = params[2]
-	# 	return builddownloadresponse(sharedtemps, file)
-	#   else
-	# 	@show "unknown request $(req.resource)"
-	# 	404
-	#   end
-  # end
-  # server = Server( http )
-  # run(server, port=port)
-  route("/index.html") do
+function defineRoutes!(sharedtemps)
+  route("/dashboard") do
+    @info "dashboard route"
     html(maketemptable(sharedtemps[:timestamp], sharedtemps[:temp1], sharedtemps[:temp2], files = sharedtemps[:logfiles]))
   end
+  route("/index.html") do
+    @info "index.html welcome route"
+    html("Welcome to Tempberry, see /dashboard for live data")
+  end
+  route("/download") do
+    html("DOWNLOADS NOT AVAILABLE AT THIS TIME")
+    @info "download route"
+	  #     params = split(split(req.resource,'?')[end], '=')
+	  # 	file = params[2]
+	  # 	return builddownloadresponse(sharedtemps, file)
+  end
+  
+  nothing
+end
 
+function hosttempberrylive(;port=8000,delay=5)
+
+  sharedtemps = initSharedDict()
+
+  # start the update cycle
+  @async intervalTimer!(sharedtemps[:condition])
+  @async updateCycle!(sharedtemps)  
+
+  # populate the URL routes offered by Tempberry
+  defineRoutes!(sharedtemps)
+
+  # start the web server (blocking mode)
   startup(port, async=false)
+  
   nothing
 end
 
