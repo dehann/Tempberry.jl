@@ -10,12 +10,14 @@ export
   hosttempberrylive,
   hosttestpage,
   loop!,
-  maketemptable
+  maketemptable,
+  prepareSendEmail
 
 
 ## Temperatures page ===========================================================
 
 include("RaspPiThermDS18B20.jl")
+include("PrepareEmail.jl")
 include("MakeHtml.jl")
 include("Logging.jl")
 include("TempberryLivePage.jl")

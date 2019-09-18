@@ -26,17 +26,42 @@ function loop!(stl::Dict{Symbol,Any})
 end
 
 
-function intervalTimer!(cond::Condition; interval::Float64=5.0)
-  while true
+function intervalTimer!(stl; interval::Float64=5.0)
+  cond = stl[:condition]
+  while stl[:doIntervals]
     notify(cond)
     sleep(interval)
   end
 end
 
+function checkTempAlarms(sharedtemps::Dict)::Nothing
+  # short hand variable
+  sinceAlarm = now() - sharedtemps[:timeSinceLastAlarm]
+  if sinceAlarm < sharedtemps[:alarmPeriod]
+    return nothing
+  end
+  
+  temp1 = sharedtemps[:temp1]
+  temp2 = sharedtemps[:temp2]
+  mintemp = sharedtemps[:minTempAlarm]
+  maxtemp = sharedtemps[:maxTempAlarm]
+  # check minimum temp alarm condition
+  if temp1 < mintemp || temp2 < mintemp || maxtemp < temp1 || maxtemp < temp2
+    prepareSendEmail(temp1, temp2)
+    # reset the alarm timer
+    sharedtemps[:timeSinceLastAlarm] = now()
+  end
+  return nothing
+end
+
 function updateCycle!(sharedtemps::Dict)
-  while true
+  while sharedtemps[:doIntervals]
     wait(sharedtemps[:condition])
+    # update the registers with new temperature data
     loop!(sharedtemps)
+
+    # monitor for (and send) alarms
+    checkTempAlarms(sharedtemps)
   end
 end
 
@@ -49,6 +74,12 @@ function initSharedDict()
   sharedtemps[:logdir]="$(ENV["HOME"])/temperaturelogs/"
   sharedtemps[:logfiles] = Vector{String}()
   sharedtemps[:condition] = Condition()
+  sharedtemps[:doIntervals] = true
+  # alarm parameters
+  sharedtemps[:timeSinceLastAlarm] = now()
+  sharedtemps[:alarmPeriod] = Hour(2)
+  sharedtemps[:maxTempAlarm] = 30.0
+  sharedtemps[:minTempAlarm] = 10.0
   return sharedtemps
 end
 
@@ -72,13 +103,28 @@ function defineRoutes!(sharedtemps)
   nothing
 end
 
+function conductor(task::Task, stl::Dict)
+  while stl[:doIntervals]
+    sleep(10)
+    if task.state == :failed
+      stl[:doIntervals] = false
+      file = open("/tmp/tempberry_stacktrace.txt", "w")
+      println(file, task.exception)
+      close(file)
+      @error task.exception
+      error(task.exception)
+    end
+  end
+end
+
 function hosttempberrylive(;port=8000,delay=5)
 
   sharedtemps = initSharedDict()
 
   # start the update cycle
-  @async intervalTimer!(sharedtemps[:condition])
-  @async updateCycle!(sharedtemps)  
+  @async intervalTimer!(sharedtemps)
+  task = @async updateCycle!(sharedtemps)
+  @async conductor(task, sharedtemps)
 
   # populate the URL routes offered by Tempberry
   defineRoutes!(sharedtemps)
