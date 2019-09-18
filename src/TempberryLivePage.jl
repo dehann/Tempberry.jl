@@ -76,8 +76,8 @@ function initSharedDict()
   sharedtemps[:condition] = Condition()
   sharedtemps[:doIntervals] = true
   # alarm parameters
-  sharedtemps[:timeSinceLastAlarm] = now()
   sharedtemps[:alarmPeriod] = Hour(2)
+  sharedtemps[:timeSinceLastAlarm] = now() - sharedtemps[:alarmPeriod]
   sharedtemps[:maxTempAlarm] = 30.0
   sharedtemps[:minTempAlarm] = 10.0
   return sharedtemps
