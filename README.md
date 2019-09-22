@@ -11,7 +11,9 @@ The following blogs or tutorials were used to set up the associated hardware (al
 - [Adafruit Blog](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
 - [Multiple thermometers](http://www.reuk.co.uk/wordpress/raspberry-pi/connect-multiple-temperature-sensors-with-raspberry-pi/)
 - [YouTube Tutorial](http://www.youtube.com/watch?v=aEnS0-Jy2vE)
-- [OPTIONAL] [PWM GPIO driving](https://electronicshobbyists.com/raspberry-pi-pwm-tutorial-control-brightness-of-led-and-servo-motor/) for peltier control (WIP). 
+- [OPTIONAL] Peltier Control
+ - [PWM GPIO driving](https://electronicshobbyists.com/raspberry-pi-pwm-tutorial-control-brightness-of-led-and-servo-motor/) for peltier control (WIP). 
+ - [RPi Pinout](https://pinout.xyz/pinout/pin2_5v_power#)
 
 ## Bill of Materials
 
