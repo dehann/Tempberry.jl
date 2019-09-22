@@ -8,7 +8,7 @@ This is a [Julia](http://www.julialang.org) ([JuliaPro](http://www.juliacomputin
 ## Background
 
 The following blogs or tutorials were used to set up the associated hardware (although we used slightly different interface boards):
-- [Adafruit Blog](http://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing/parts)
+- [Adafruit Blog](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
 - [Multiple thermometers](http://www.reuk.co.uk/wordpress/raspberry-pi/connect-multiple-temperature-sensors-with-raspberry-pi/)
 - [YouTube Tutorial](http://www.youtube.com/watch?v=aEnS0-Jy2vE)
 
