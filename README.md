@@ -62,5 +62,5 @@ Follow the [Adafruit blog](http://learn.adafruit.com/adafruits-raspberry-pi-less
 
 Work in progress
 ```
-LD_LIBRARY_PATH=/usr/lib/arm-linux-gnueabihf:/home/pi/software/julia-1.2.0/bin/../lib/julia julia -e "using Tempberry; hosttempberrylive()"
+LD_LIBRARY_PATH=/usr/lib/arm-linux-gnueabihf:/home/pi/software/julia-1.6.6/lib/julia julia -e "using Tempberry; hosttempberrylive()"
 ```
