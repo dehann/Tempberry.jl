@@ -130,7 +130,7 @@ function hosttempberrylive(;port=8000,delay=5)
   defineRoutes!(sharedtemps)
 
   # start the web server (blocking mode)
-  startup(port, async=false)
+  up(port, async=false)
   
   nothing
 end

@@ -1,7 +1,7 @@
 module Tempberry
 
 using
-  Genie, Genie.Router, Genie.Renderer,
+  Genie, Genie.Router, Genie.Renderer, Genie.Renderer.Html,
   Dates
 
 export
